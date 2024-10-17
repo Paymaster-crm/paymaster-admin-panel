@@ -6,7 +6,7 @@ import axios from "axios";
 function UpdateReviews() {
   useEffect(() => {
     async function getBannerData() {
-      const res = await axios("http://localhost:9000/api/get-data");
+      const res = await axios(`${process.env.REACT_APP_API_STRING}/get-data`);
       formik.setValues({
         review: res.data.review || "",
         reviewer_name: res.data.reviewer_name || "",
@@ -24,7 +24,7 @@ function UpdateReviews() {
     },
     onSubmit: async (values) => {
       const res = await axios.post(
-        "http://localhost:9000/api/update-reviews",
+        `${process.env.REACT_APP_API_STRING}/update-reviews`,
         values
       );
       alert(res.data.message);

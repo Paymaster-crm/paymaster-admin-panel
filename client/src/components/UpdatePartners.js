@@ -9,7 +9,7 @@ function UpdatePartners() {
 
   useEffect(() => {
     async function getBannerData() {
-      const res = await axios("http://localhost:9000/api/get-data");
+      const res = await axios(`${process.env.REACT_APP_API_STRING}/get-data`);
       formik.setValues({
         partners_heading: res.data.partners_heading || "",
         partners_icon_1: res.data.partners_icon_1 || "",
@@ -43,7 +43,7 @@ function UpdatePartners() {
     onSubmit: async (values) => {
       console.log(values);
       const res = await axios.post(
-        "http://localhost:9000/api/update-partners",
+        `${process.env.REACT_APP_API_STRING}/update-partners`,
         values
       );
       alert(res.data.message);

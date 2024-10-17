@@ -9,7 +9,7 @@ function UpdateProducts() {
 
   useEffect(() => {
     async function getBannerData() {
-      const res = await axios("http://localhost:9000/api/get-data");
+      const res = await axios(`${process.env.REACT_APP_API_STRING}/get-data`);
       formik.setValues({
         products_heading: res.data.products_heading || "",
         product_1_name: res.data.product_1_name || "",
@@ -73,7 +73,7 @@ function UpdateProducts() {
     onSubmit: async (values) => {
       console.log(values);
       const res = await axios.post(
-        "http://localhost:9000/api/update-products",
+        `${process.env.REACT_APP_API_STRING}/update-products`,
         values
       );
       alert(res.data.message);

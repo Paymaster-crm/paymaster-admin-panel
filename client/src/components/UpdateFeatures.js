@@ -9,7 +9,7 @@ function UpdateFeatures() {
 
   useEffect(() => {
     async function getBannerData() {
-      const res = await axios("http://localhost:9000/api/get-data");
+      const res = await axios(`${process.env.REACT_APP_API_STRING}/get-data`);
       formik.setValues({
         features_subheading: res.data.features_subheading || "",
         features_heading: res.data.features_heading || "",
@@ -59,7 +59,7 @@ function UpdateFeatures() {
     },
     onSubmit: async (values) => {
       const res = await axios.post(
-        "http://localhost:9000/api/update-features",
+        `${process.env.REACT_APP_API_STRING}/update-features`,
         values
       );
       alert(res.data.message);

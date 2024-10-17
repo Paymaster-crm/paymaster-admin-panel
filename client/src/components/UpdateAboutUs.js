@@ -9,7 +9,7 @@ function UpdateAboutUs() {
 
   useEffect(() => {
     async function getBannerData() {
-      const res = await axios("http://localhost:9000/api/get-data");
+      const res = await axios(`${process.env.REACT_APP_API_STRING}/get-data`);
       formik.setValues({
         about_us_content: res.data.about_us_content || "",
         about_us_bg: res.data.about_us_bg || "",
@@ -29,7 +29,7 @@ function UpdateAboutUs() {
     },
     onSubmit: async (values) => {
       const res = await axios.post(
-        "http://localhost:9000/api/update-about-us",
+        `${process.env.REACT_APP_API_STRING}/update-about-us`,
         values
       );
       alert(res.data.message);
