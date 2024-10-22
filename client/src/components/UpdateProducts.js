@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TextField, Button, Snackbar } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
-import { handleSingleFileUpload } from "../utils/awsSingleFileUpload";
+import { handleAwsNestedFileUpload } from "../utils/handleAwsNestedFileUpload";
 
 function UpdateProducts() {
   const [fileSnackbar, setFileSnackbar] = useState(false);
@@ -12,28 +12,18 @@ function UpdateProducts() {
       const res = await axios(`${process.env.REACT_APP_API_STRING}/get-data`);
       formik.setValues({
         products_heading: res.data.products_heading || "",
-        product_1_name: res.data.product_1_name || "",
-        product_2_name: res.data.product_2_name || "",
-        product_3_name: res.data.product_3_name || "",
-        product_1_heading: res.data.product_1_heading || "",
-        product_2_heading: res.data.product_2_heading || "",
-        product_3_heading: res.data.product_3_heading || "",
-        product_1_content: res.data.product_1_content || "",
-        product_2_content: res.data.product_2_content || "",
-        product_3_content: res.data.product_3_content || "",
-        product_1_img: res.data.product_1_img || "",
-        product_2_img: res.data.product_2_img || "",
-        product_3_img: res.data.product_3_img || "",
-        product_1_btn_2_text: res.data.product_1_btn_2_text || "",
-        product_1_btn_2_link: res.data.product_1_btn_2_link || "",
-        product_2_btn_1_text: res.data.product_2_btn_1_text || "",
-        product_2_btn_1_link: res.data.product_2_btn_1_link || "",
-        product_2_btn_2_text: res.data.product_2_btn_2_text || "",
-        product_2_btn_2_link: res.data.product_2_btn_2_link || "",
-        product_3_btn_1_text: res.data.product_3_btn_1_text || "",
-        product_3_btn_1_link: res.data.product_3_btn_1_link || "",
-        product_3_btn_2_text: res.data.product_3_btn_2_text || "",
-        product_3_btn_2_link: res.data.product_3_btn_2_link || "",
+        products: res.data.products || [
+          {
+            product_name: "",
+            product_heading: "",
+            product_content: "",
+            product_img: "",
+            product_btn_1_text: "",
+            product_btn_1_link: "",
+            product_btn_2_text: "",
+            product_btn_2_link: "",
+          },
+        ],
       });
     }
 
@@ -42,36 +32,24 @@ function UpdateProducts() {
   }, []);
 
   const formik = useFormik({
-    enableReinitialize: true, // Allow reinitializing with new values
+    enableReinitialize: true,
     initialValues: {
       products_heading: "",
-      product_1_name: "",
-      product_2_name: "",
-      product_3_name: "",
-      product_1_heading: "",
-      product_2_heading: "",
-      product_3_heading: "",
-      product_1_content: "",
-      product_2_content: "",
-      product_3_content: "",
-      product_1_img: "",
-      product_2_img: "",
-      product_3_img: "",
-      product_1_btn_1_text: "",
-      product_1_btn_1_link: "",
-      product_1_btn_2_text: "",
-      product_1_btn_2_link: "",
-      product_2_btn_1_text: "",
-      product_2_btn_1_link: "",
-      product_2_btn_2_text: "",
-      product_2_btn_2_link: "",
-      product_3_btn_1_text: "",
-      product_3_btn_1_link: "",
-      product_3_btn_2_text: "",
-      product_3_btn_2_link: "",
+      products: [
+        {
+          product_name: "",
+          product_heading: "",
+          product_content: "",
+          product_img: "",
+          product_btn_1_text: "",
+          product_btn_1_link: "",
+          product_btn_2_text: "",
+          product_btn_2_link: "",
+        },
+      ],
     },
     onSubmit: async (values) => {
-      console.log(values);
+      console.log(JSON.stringify(values));
       const res = await axios.post(
         `${process.env.REACT_APP_API_STRING}/update-products`,
         values
@@ -80,8 +58,27 @@ function UpdateProducts() {
     },
   });
 
-  const handleDeleteImage = (fieldName) => {
-    formik.setFieldValue(fieldName, ""); // Reset the specified image field to an empty string
+  const handleDeleteImage = (index) => {
+    formik.setFieldValue(`products[${index}].product_img`, "");
+  };
+
+  const handleAddField = () => {
+    formik.setValues({
+      ...formik.values,
+      products: [
+        ...formik.values.products,
+        {
+          product_name: "",
+          product_heading: "",
+          product_content: "",
+          product_img: "",
+          product_btn_1_text: "",
+          product_btn_1_link: "",
+          product_btn_2_text: "",
+          product_btn_2_link: "",
+        },
+      ],
+    });
   };
 
   return (
@@ -106,514 +103,133 @@ function UpdateProducts() {
           }
         />
 
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_1_name"
-          name="product_1_name"
-          label="Product 1 Name"
-          value={formik.values.product_1_name}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_1_name &&
-            Boolean(formik.errors.product_1_name)
-          }
-          helperText={
-            formik.touched.product_1_name && formik.errors.product_1_name
-          }
-        />
+        {formik.values.products.map((product, index) => (
+          <div key={index}>
+            <TextField
+              fullWidth
+              size="small"
+              margin="dense"
+              variant="filled"
+              id={`products[${index}].product_name`}
+              name={`products[${index}].product_name`}
+              label="Product Name"
+              value={product.product_name}
+              onChange={formik.handleChange}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              margin="dense"
+              variant="filled"
+              id={`products[${index}].product_heading`}
+              name={`products[${index}].product_heading`}
+              label="Product Heading"
+              value={product.product_heading}
+              onChange={formik.handleChange}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              margin="dense"
+              variant="filled"
+              id={`products[${index}].product_content`}
+              name={`products[${index}].product_content`}
+              label="Product Content"
+              value={product.product_content}
+              onChange={formik.handleChange}
+            />
 
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_3_name"
-          name="product_3_name"
-          label="Product 3 Name"
-          value={formik.values.product_3_name}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_3_name &&
-            Boolean(formik.errors.product_3_name)
-          }
-          helperText={
-            formik.touched.product_3_name && formik.errors.product_3_name
-          }
-        />
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_2_name"
-          name="product_2_name"
-          label="Product 3 Name"
-          value={formik.values.product_2_name}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_2_name &&
-            Boolean(formik.errors.product_2_name)
-          }
-          helperText={
-            formik.touched.product_2_name && formik.errors.product_2_name
-          }
-        />
-
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_1_heading"
-          name="product_1_heading"
-          label="Product 1 Heading"
-          value={formik.values.product_1_heading}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_1_heading &&
-            Boolean(formik.errors.product_1_heading)
-          }
-          helperText={
-            formik.touched.product_1_heading && formik.errors.product_1_heading
-          }
-        />
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_1_content"
-          name="product_1_content"
-          label="Product 1 Content"
-          value={formik.values.product_1_content}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_1_content &&
-            Boolean(formik.errors.product_1_content)
-          }
-          helperText={
-            formik.touched.product_1_content && formik.errors.product_1_content
-          }
-        />
-
-        <br />
-        <br />
-        <label htmlFor="product_1_img">Product 1 Image:&nbsp;</label>
-        <input
-          type="file"
-          onChange={(e) =>
-            handleSingleFileUpload(
-              e,
-              "product_1_img",
-              "product_1_img",
-              formik,
-              setFileSnackbar
-            )
-          }
-        />
-        <br />
-        {formik.values.product_1_img && (
-          <div>
-            <img
-              src={formik.values.product_1_img}
-              alt="Product 1"
-              style={{ width: "100px", height: "100px" }}
+            {/* File Input for Image */}
+            <input
+              type="file"
+              onChange={(e) =>
+                handleAwsNestedFileUpload(
+                  e,
+                  `products[${index}].product_img`,
+                  `product_img_${index}`,
+                  formik,
+                  setFileSnackbar
+                )
+              }
             />
             <br />
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => handleDeleteImage("product_1_img")} // Pass the field name to delete
-            >
-              Delete Image
-            </Button>
-          </div>
-        )}
+            {product.product_img && (
+              <div>
+                <img
+                  src={product.product_img}
+                  alt={`Product ${index + 1}`}
+                  style={{ width: "100px", height: "100px" }}
+                />
+                <br />
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => handleDeleteImage(index)}
+                >
+                  Delete Image
+                </Button>
+              </div>
+            )}
 
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_2_heading"
-          name="product_2_heading"
-          label="Product 2 Heading"
-          value={formik.values.product_2_heading}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_2_heading &&
-            Boolean(formik.errors.product_2_heading)
-          }
-          helperText={
-            formik.touched.product_2_heading && formik.errors.product_2_heading
-          }
-        />
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_2_content"
-          name="product_2_content"
-          label="Product 2 Content"
-          value={formik.values.product_2_content}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_2_content &&
-            Boolean(formik.errors.product_2_content)
-          }
-          helperText={
-            formik.touched.product_2_content && formik.errors.product_2_content
-          }
-        />
-
-        <br />
-        <br />
-        <label htmlFor="product_2_img">Product 2 Image:&nbsp;</label>
-        <input
-          type="file"
-          onChange={(e) =>
-            handleSingleFileUpload(
-              e,
-              "product_2_img",
-              "product_2_img",
-              formik,
-              setFileSnackbar
-            )
-          }
-        />
-        <br />
-        {formik.values.product_2_img && (
-          <div>
-            <img
-              src={formik.values.product_2_img}
-              alt="Product 2"
-              style={{ width: "100px", height: "100px" }}
+            {/* Other fields */}
+            <TextField
+              fullWidth
+              size="small"
+              margin="dense"
+              variant="filled"
+              id={`products[${index}].product_btn_1_text`}
+              name={`products[${index}].product_btn_1_text`}
+              label="Button 1 Text"
+              value={product.product_btn_1_text}
+              onChange={formik.handleChange}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              margin="dense"
+              variant="filled"
+              id={`products[${index}].product_btn_1_link`}
+              name={`products[${index}].product_btn_1_link`}
+              label="Button 1 Link"
+              value={product.product_btn_1_link}
+              onChange={formik.handleChange}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              margin="dense"
+              variant="filled"
+              id={`products[${index}].product_btn_2_text`}
+              name={`products[${index}].product_btn_2_text`}
+              label="Button 2 Text"
+              value={product.product_btn_2_text}
+              onChange={formik.handleChange}
+            />
+            <TextField
+              fullWidth
+              size="small"
+              margin="dense"
+              variant="filled"
+              id={`products[${index}].product_btn_2_link`}
+              name={`products[${index}].product_btn_2_link`}
+              label="Button 2 Link"
+              value={product.product_btn_2_link}
+              onChange={formik.handleChange}
             />
             <br />
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => handleDeleteImage("product_2_img")} // Pass the field name to delete
-            >
-              Delete Image
-            </Button>
-          </div>
-        )}
-
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_3_heading"
-          name="product_3_heading"
-          label="Product 3 Heading"
-          value={formik.values.product_3_heading}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_3_heading &&
-            Boolean(formik.errors.product_3_heading)
-          }
-          helperText={
-            formik.touched.product_3_heading && formik.errors.product_3_heading
-          }
-        />
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_3_content"
-          name="product_3_content"
-          label="Product 1 Content"
-          value={formik.values.product_3_content}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_3_content &&
-            Boolean(formik.errors.product_3_content)
-          }
-          helperText={
-            formik.touched.product_3_content && formik.errors.product_3_content
-          }
-        />
-
-        <br />
-        <br />
-        <label htmlFor="product_3_img">Product 3 Image:&nbsp;</label>
-        <input
-          type="file"
-          onChange={(e) =>
-            handleSingleFileUpload(
-              e,
-              "product_3_img",
-              "product_3_img",
-              formik,
-              setFileSnackbar
-            )
-          }
-        />
-        <br />
-        {formik.values.product_3_img && (
-          <div>
-            <img
-              src={formik.values.product_3_img}
-              alt="Product 3"
-              style={{ width: "100px", height: "100px" }}
-            />
             <br />
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => handleDeleteImage("product_3_img")} // Pass the field name to delete
-            >
-              Delete Image
-            </Button>
           </div>
-        )}
+        ))}
 
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_1_btn_1_text"
-          name="product_1_btn_1_text"
-          label="Product 1 Button 1 Text"
-          value={formik.values.product_1_btn_1_text}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_1_btn_1_text &&
-            Boolean(formik.errors.product_1_btn_1_text)
-          }
-          helperText={
-            formik.touched.product_1_btn_1_text &&
-            formik.errors.product_1_btn_1_text
-          }
-        />
-
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_1_btn_1_link"
-          name="product_1_btn_1_link"
-          label="Product 1 Button 1 Link"
-          value={formik.values.product_1_btn_1_link}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_1_btn_1_link &&
-            Boolean(formik.errors.product_1_btn_1_link)
-          }
-          helperText={
-            formik.touched.product_1_btn_1_link &&
-            formik.errors.product_1_btn_1_link
-          }
-        />
-
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_1_btn_2_text"
-          name="product_1_btn_2_text"
-          label="Product 1 Button 2 Text"
-          value={formik.values.product_1_btn_2_text}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_1_btn_2_text &&
-            Boolean(formik.errors.product_1_btn_2_text)
-          }
-          helperText={
-            formik.touched.product_1_btn_2_text &&
-            formik.errors.product_1_btn_2_text
-          }
-        />
-
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_1_btn_2_link"
-          name="product_1_btn_2_link"
-          label="Product 1 Button 2 Link"
-          value={formik.values.product_1_btn_2_link}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_1_btn_2_link &&
-            Boolean(formik.errors.product_1_btn_2_link)
-          }
-          helperText={
-            formik.touched.product_1_btn_2_link &&
-            formik.errors.product_1_btn_2_link
-          }
-        />
-
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_2_btn_1_text"
-          name="product_2_btn_1_text"
-          label="Product 3 Button 1 Text"
-          value={formik.values.product_2_btn_1_text}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_2_btn_1_text &&
-            Boolean(formik.errors.product_2_btn_1_text)
-          }
-          helperText={
-            formik.touched.product_2_btn_1_text &&
-            formik.errors.product_2_btn_1_text
-          }
-        />
-
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_2_btn_1_link"
-          name="product_2_btn_1_link"
-          label="Product 2 Button 1 Link"
-          value={formik.values.product_2_btn_1_link}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_2_btn_1_link &&
-            Boolean(formik.errors.product_2_btn_1_link)
-          }
-          helperText={
-            formik.touched.product_2_btn_1_link &&
-            formik.errors.product_2_btn_1_link
-          }
-        />
-
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_2_btn_2_text"
-          name="product_2_btn_2_text"
-          label="Product 2 Button 2 Text"
-          value={formik.values.product_2_btn_2_text}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_2_btn_2_text &&
-            Boolean(formik.errors.product_2_btn_2_text)
-          }
-          helperText={
-            formik.touched.product_2_btn_2_text &&
-            formik.errors.product_2_btn_2_text
-          }
-        />
-
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_2_btn_2_link"
-          name="product_2_btn_2_link"
-          label="Product 2 Button 2 Link"
-          value={formik.values.product_2_btn_2_link}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_2_btn_2_link &&
-            Boolean(formik.errors.product_2_btn_2_link)
-          }
-          helperText={
-            formik.touched.product_2_btn_2_link &&
-            formik.errors.product_2_btn_2_link
-          }
-        />
-
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_3_btn_1_text"
-          name="product_3_btn_1_text"
-          label="Product 3 Button 1 Text"
-          value={formik.values.product_3_btn_1_text}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_3_btn_1_text &&
-            Boolean(formik.errors.product_3_btn_1_text)
-          }
-          helperText={
-            formik.touched.product_3_btn_1_text &&
-            formik.errors.product_3_btn_1_text
-          }
-        />
-
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_3_btn_1_link"
-          name="product_3_btn_1_link"
-          label="Product 3 Button 1 Link"
-          value={formik.values.product_3_btn_1_link}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_3_btn_1_link &&
-            Boolean(formik.errors.product_3_btn_1_link)
-          }
-          helperText={
-            formik.touched.product_3_btn_1_link &&
-            formik.errors.product_3_btn_1_link
-          }
-        />
-
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_3_btn_2_text"
-          name="product_3_btn_2_text"
-          label="Product 3 Button 2 Text"
-          value={formik.values.product_3_btn_2_text}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_3_btn_2_text &&
-            Boolean(formik.errors.product_3_btn_2_text)
-          }
-          helperText={
-            formik.touched.product_3_btn_2_text &&
-            formik.errors.product_3_btn_2_text
-          }
-        />
-
-        <TextField
-          size="small"
-          fullWidth
-          margin="dense"
-          variant="filled"
-          id="product_3_btn_2_link"
-          name="product_3_btn_2_link"
-          label="Product 3 Button 2 Link"
-          value={formik.values.product_3_btn_2_link}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.product_3_btn_2_link &&
-            Boolean(formik.errors.product_3_btn_2_link)
-          }
-          helperText={
-            formik.touched.product_3_btn_2_link &&
-            formik.errors.product_3_btn_2_link
-          }
-        />
+        <button
+          type="button"
+          className="btn"
+          aria-label="submit-btn"
+          style={{ marginBottom: "20px", padding: "5px" }}
+          onClick={handleAddField}
+        >
+          Add Product
+        </button>
 
         <button type="submit">Submit</button>
       </form>
