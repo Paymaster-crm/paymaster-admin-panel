@@ -3,6 +3,7 @@ import { TextField, Button, Snackbar } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
 import { handleAwsNestedFileUpload } from "../utils/handleAwsNestedFileUpload";
+import { validationSchema } from "../schemas/productsSchema";
 
 function UpdateProducts() {
   const [fileSnackbar, setFileSnackbar] = useState(false);
@@ -48,6 +49,7 @@ function UpdateProducts() {
         },
       ],
     },
+    validationSchema,
     onSubmit: async (values) => {
       console.log(JSON.stringify(values));
       const res = await axios.post(
@@ -79,6 +81,12 @@ function UpdateProducts() {
         },
       ],
     });
+  };
+
+  const handleDeleteProduct = (index) => {
+    const updatedProducts = [...formik.values.products];
+    updatedProducts.splice(index, 1);
+    formik.setFieldValue("products", updatedProducts);
   };
 
   return (
@@ -115,6 +123,16 @@ function UpdateProducts() {
               label="Product Name"
               value={product.product_name}
               onChange={formik.handleChange}
+              error={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_name &&
+                Boolean(formik.errors.products?.[index]?.product_name)
+              }
+              helperText={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_name &&
+                formik.errors.products?.[index]?.product_name
+              }
             />
             <TextField
               fullWidth
@@ -126,6 +144,16 @@ function UpdateProducts() {
               label="Product Heading"
               value={product.product_heading}
               onChange={formik.handleChange}
+              error={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_heading &&
+                Boolean(formik.errors.products?.[index]?.product_heading)
+              }
+              helperText={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_heading &&
+                formik.errors.products?.[index]?.product_heading
+              }
             />
             <TextField
               fullWidth
@@ -137,6 +165,16 @@ function UpdateProducts() {
               label="Product Content"
               value={product.product_content}
               onChange={formik.handleChange}
+              error={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_content &&
+                Boolean(formik.errors.products?.[index]?.product_content)
+              }
+              helperText={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_content &&
+                formik.errors.products?.[index]?.product_content
+              }
             />
 
             {/* File Input for Image */}
@@ -182,6 +220,16 @@ function UpdateProducts() {
               label="Button 1 Text"
               value={product.product_btn_1_text}
               onChange={formik.handleChange}
+              error={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_btn_1_text &&
+                Boolean(formik.errors.products?.[index]?.product_btn_1_text)
+              }
+              helperText={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_btn_1_text &&
+                formik.errors.products?.[index]?.product_btn_1_text
+              }
             />
             <TextField
               fullWidth
@@ -193,6 +241,16 @@ function UpdateProducts() {
               label="Button 1 Link"
               value={product.product_btn_1_link}
               onChange={formik.handleChange}
+              error={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_btn_1_link &&
+                Boolean(formik.errors.products?.[index]?.product_btn_1_link)
+              }
+              helperText={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_btn_1_link &&
+                formik.errors.products?.[index]?.product_btn_1_link
+              }
             />
             <TextField
               fullWidth
@@ -204,6 +262,16 @@ function UpdateProducts() {
               label="Button 2 Text"
               value={product.product_btn_2_text}
               onChange={formik.handleChange}
+              error={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_btn_2_text &&
+                Boolean(formik.errors.products?.[index]?.product_btn_2_text)
+              }
+              helperText={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_btn_2_text &&
+                formik.errors.products?.[index]?.product_btn_2_text
+              }
             />
             <TextField
               fullWidth
@@ -215,7 +283,21 @@ function UpdateProducts() {
               label="Button 2 Link"
               value={product.product_btn_2_link}
               onChange={formik.handleChange}
+              error={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_btn_2_link &&
+                Boolean(formik.errors.products?.[index]?.product_btn_2_link)
+              }
+              helperText={
+                formik.touched.products &&
+                formik.touched.products[index]?.product_btn_2_link &&
+                formik.errors.products?.[index]?.product_btn_2_link
+              }
             />
+
+            <button type="button" onClick={() => handleDeleteProduct(index)}>
+              Delete Product
+            </button>
             <br />
             <br />
           </div>

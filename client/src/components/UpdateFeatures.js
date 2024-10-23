@@ -3,6 +3,7 @@ import { TextField, Button, Snackbar } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
 import { handleSingleFileUpload } from "../utils/awsSingleFileUpload";
+import { validationSchema } from "../schemas/featuresSchema";
 
 function UpdateFeatures() {
   const [fileSnackbar, setFileSnackbar] = useState(false);
@@ -57,6 +58,7 @@ function UpdateFeatures() {
       features_heading_2: "",
       features_img: "",
     },
+    validationSchema,
     onSubmit: async (values) => {
       const res = await axios.post(
         `${process.env.REACT_APP_API_STRING}/update-features`,

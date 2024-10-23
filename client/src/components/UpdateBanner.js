@@ -3,6 +3,7 @@ import { TextField, Button, Snackbar } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
 import { handleSingleFileUpload } from "../utils/awsSingleFileUpload";
+import { validationSchema } from "../schemas/bannerSchema";
 
 function UpdateBanner() {
   const [fileSnackbar, setFileSnackbar] = useState(false);
@@ -40,6 +41,7 @@ function UpdateBanner() {
       banner_bg: "",
       banner_image: "",
     },
+    validationSchema,
     onSubmit: async (values) => {
       console.log(values);
       const res = await axios.post(

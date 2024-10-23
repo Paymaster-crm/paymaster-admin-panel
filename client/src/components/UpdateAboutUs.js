@@ -3,7 +3,7 @@ import { TextField, Button, Snackbar } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
 import { handleSingleFileUpload } from "../utils/awsSingleFileUpload";
-
+import { validationSchema } from "../schemas/aboutUsSchema";
 function UpdateAboutUs() {
   const [fileSnackbar, setFileSnackbar] = useState(false);
 
@@ -27,6 +27,7 @@ function UpdateAboutUs() {
       about_us_bg: "",
       about_us_img: "",
     },
+    validationSchema,
     onSubmit: async (values) => {
       const res = await axios.post(
         `${process.env.REACT_APP_API_STRING}/update-about-us`,

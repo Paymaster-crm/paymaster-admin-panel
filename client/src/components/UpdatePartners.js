@@ -3,6 +3,7 @@ import { TextField, Button, Snackbar } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
 import { handleSingleFileUpload } from "../utils/awsSingleFileUpload";
+import { validationSchema } from "../schemas/partnersSchema";
 
 function UpdatePartners() {
   const [fileSnackbar, setFileSnackbar] = useState(false);
@@ -40,6 +41,7 @@ function UpdatePartners() {
       partners_text_3: "",
       partners_text_4: "",
     },
+    validationSchema,
     onSubmit: async (values) => {
       console.log(values);
       const res = await axios.post(

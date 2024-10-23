@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { TextField } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
+import { validationSchema } from "../schemas/reviewsSchema";
 
 function UpdateReviews() {
   useEffect(() => {
@@ -22,6 +23,7 @@ function UpdateReviews() {
       review: "",
       reviewer_name: "",
     },
+    validationSchema,
     onSubmit: async (values) => {
       const res = await axios.post(
         `${process.env.REACT_APP_API_STRING}/update-reviews`,
