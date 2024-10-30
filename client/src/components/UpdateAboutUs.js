@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { TextField, Button, Snackbar } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
-import { handleSingleFileUpload } from "../utils/awsSingleFileUpload";
+import { handleAwsNestedFileUpload } from "../utils/handleAwsNestedFileUpload";
 import { validationSchema } from "../schemas/aboutUsSchema";
+
 function UpdateAboutUs() {
   const [fileSnackbar, setFileSnackbar] = useState(false);
 
@@ -11,9 +12,11 @@ function UpdateAboutUs() {
     async function getBannerData() {
       const res = await axios(`${process.env.REACT_APP_API_STRING}/get-data`);
       formik.setValues({
+        about_us_heading: res.data.about_us_heading || "",
+        about_us_banner_info: res.data.about_us_banner_info || "",
+        about_us_content_heading: res.data.about_us_content_heading || "",
         about_us_content: res.data.about_us_content || "",
-        about_us_bg: res.data.about_us_bg || "",
-        about_us_img: res.data.about_us_img || "",
+        about_us_images: res.data.about_us_images || [],
       });
     }
 
@@ -23,9 +26,15 @@ function UpdateAboutUs() {
 
   const formik = useFormik({
     initialValues: {
+      about_us_heading: "",
+      about_us_banner_info: "",
+      about_us_content_heading: "",
       about_us_content: "",
-      about_us_bg: "",
-      about_us_img: "",
+      about_us_images: [
+        {
+          about_us_img: "",
+        },
+      ],
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -37,13 +46,82 @@ function UpdateAboutUs() {
     },
   });
 
-  const handleDeleteImage = (fieldName) => {
-    formik.setFieldValue(fieldName, ""); // Reset the specified image field to an empty string
+  const handleDeleteImage = (index) => {
+    const updatedImages = formik.values.about_us_images.filter(
+      (_, i) => i !== index
+    );
+    formik.setFieldValue("about_us_images", updatedImages);
+  };
+
+  const handleAddField = () => {
+    formik.setFieldValue("about_us_images", [
+      ...formik.values.about_us_images,
+      { about_us_img: "" },
+    ]);
   };
 
   return (
     <div className="form-container">
       <form onSubmit={formik.handleSubmit}>
+        <TextField
+          size="small"
+          fullWidth
+          margin="dense"
+          variant="filled"
+          id="about_us_heading"
+          name="about_us_heading"
+          label="About Us Heading"
+          value={formik.values.about_us_heading}
+          onChange={formik.handleChange}
+          error={
+            formik.touched.about_us_heading &&
+            Boolean(formik.errors.about_us_heading)
+          }
+          helperText={
+            formik.touched.about_us_heading && formik.errors.about_us_heading
+          }
+        />
+
+        <TextField
+          size="small"
+          fullWidth
+          margin="dense"
+          variant="filled"
+          id="about_us_banner_info"
+          name="about_us_banner_info"
+          label="About Us Banner Info"
+          value={formik.values.about_us_banner_info}
+          onChange={formik.handleChange}
+          error={
+            formik.touched.about_us_banner_info &&
+            Boolean(formik.errors.about_us_banner_info)
+          }
+          helperText={
+            formik.touched.about_us_banner_info &&
+            formik.errors.about_us_banner_info
+          }
+        />
+
+        <TextField
+          size="small"
+          fullWidth
+          margin="dense"
+          variant="filled"
+          id="about_us_content_heading"
+          name="about_us_content_heading"
+          label="About Us Content Heading"
+          value={formik.values.about_us_content_heading}
+          onChange={formik.handleChange}
+          error={
+            formik.touched.about_us_content_heading &&
+            Boolean(formik.errors.about_us_content_heading)
+          }
+          helperText={
+            formik.touched.about_us_content_heading &&
+            formik.errors.about_us_content_heading
+          }
+        />
+
         <TextField
           size="small"
           fullWidth
@@ -62,74 +140,50 @@ function UpdateAboutUs() {
             formik.touched.about_us_content && formik.errors.about_us_content
           }
         />
-        <br />
-        <br />
-        <label htmlFor="about_us_bg">About Us Background Image:&nbsp;</label>
-        <input
-          type="file"
-          onChange={(e) =>
-            handleSingleFileUpload(
-              e,
-              "about_us_bg",
-              "about_us_bg",
-              formik,
-              setFileSnackbar
-            )
-          }
-        />
-        <br />
 
-        {formik.values.about_us_bg && (
-          <div>
-            <img
-              src={formik.values.about_us_bg}
-              alt="About Us"
-              style={{ width: "100px", height: "100px" }}
+        {formik.values.about_us_images.map((image, index) => (
+          <div key={index}>
+            {/* File Input for Image */}
+            <input
+              type="file"
+              onChange={(e) =>
+                handleAwsNestedFileUpload(
+                  e,
+                  `about_us_images[${index}].about_us_img`,
+                  `about_us_img_${index}`,
+                  formik,
+                  setFileSnackbar
+                )
+              }
             />
             <br />
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => handleDeleteImage("about_us_bg")} // Pass the field name to delete
-            >
+            {image.about_us_img && (
+              <div>
+                <img
+                  src={image.about_us_img}
+                  alt={`Image ${index + 1}`}
+                  style={{ width: "100px", height: "100px" }}
+                />
+              </div>
+            )}
+
+            <button type="button" onClick={() => handleDeleteImage(index)}>
               Delete Image
-            </Button>
-          </div>
-        )}
-
-        <br />
-
-        <label htmlFor="about_us_img">About Us Image:&nbsp;</label>
-        <input
-          type="file"
-          onChange={(e) =>
-            handleSingleFileUpload(
-              e,
-              "about_us_img",
-              "about_us_img",
-              formik,
-              setFileSnackbar
-            )
-          }
-        />
-        <br />
-        {formik.values.about_us_img && (
-          <div>
-            <img
-              src={formik.values.about_us_img}
-              alt="About Us"
-              style={{ width: "100px", height: "100px" }}
-            />
+            </button>
             <br />
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => handleDeleteImage("about_us_img")} // Pass the field name to delete
-            >
-              Delete Image
-            </Button>
+            <br />
           </div>
-        )}
+        ))}
+
+        <button
+          type="button"
+          className="btn"
+          aria-label="submit-btn"
+          style={{ marginBottom: "20px", padding: "5px" }}
+          onClick={handleAddField}
+        >
+          Add Image
+        </button>
 
         <br />
         <br />

@@ -51,7 +51,6 @@ function UpdateProducts() {
     },
     validationSchema,
     onSubmit: async (values) => {
-      console.log(JSON.stringify(values));
       const res = await axios.post(
         `${process.env.REACT_APP_API_STRING}/update-products`,
         values

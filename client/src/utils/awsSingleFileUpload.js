@@ -23,7 +23,7 @@ export const handleSingleFileUpload = async (
     });
 
     const params = {
-      Bucket: "alvision-exim-images",
+      Bucket: "paymaster-document",
       Key: key,
       Body: file,
     };

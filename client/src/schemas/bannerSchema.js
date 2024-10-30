@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { domainRegex } from "../assets/data/emailRegex";
+import { domainRegex } from "../assets/data/domainRegex";
 
 export const validationSchema = Yup.object({
   banner_subheading: Yup.string().required("Subheading is required"),

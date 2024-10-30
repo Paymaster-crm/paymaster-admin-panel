@@ -3,6 +3,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
+import UpdateAboutUs from "../UpdateAboutUs";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -48,12 +49,12 @@ function AboutUsTabs() {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="Homepage" {...a11yProps(0)} />
-          <Tab label="About Us" {...a11yProps(1)} />
+          <Tab label="About Us" {...a11yProps(0)} />
         </Tabs>
       </Box>
-      <CustomTabPanel value={value} index={0}></CustomTabPanel>
-      <CustomTabPanel value={value} index={1}></CustomTabPanel>
+      <CustomTabPanel value={value} index={0}>
+        <UpdateAboutUs />
+      </CustomTabPanel>
     </Box>
   );
 }

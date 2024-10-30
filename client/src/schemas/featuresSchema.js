@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { domainRegex } from "../assets/data/emailRegex";
+import { domainRegex } from "../assets/data/domainRegex";
 
 export const validationSchema = Yup.object({
   features_subheading: Yup.string().required("Subheading is required"),
@@ -20,7 +20,5 @@ export const validationSchema = Yup.object({
     .matches(domainRegex, "Must be a valid URL"),
   features_subheading_2: Yup.string().required("Subheading 2 is required"),
   features_heading_2: Yup.string().required("Heading 2 is required"),
-  features_img: Yup.string()
-    .required("Image is required")
-    .matches(domainRegex, "Must be a valid URL"),
+  features_img: Yup.string().required("Image is required"),
 });

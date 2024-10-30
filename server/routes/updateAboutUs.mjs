@@ -4,17 +4,35 @@ import ContentModel from "../models/contentModel.mjs";
 const router = express.Router();
 
 router.post("/api/update-about-us", async (req, res) => {
-  const { about_us_bg, about_us_img, about_us_content } = req.body;
+  const {
+    about_us_heading,
+    about_us_banner_info,
+    about_us_content_heading,
+    about_us_content,
+    about_us_images,
+  } = req.body;
 
   try {
     // Create an object with only the defined values
     const updatedFields = {};
-    if (about_us_bg !== undefined && about_us_bg !== "")
-      updatedFields.about_us_bg = about_us_bg;
-    if (about_us_img !== undefined && about_us_img !== "")
-      updatedFields.about_us_img = about_us_img;
     if (about_us_content !== undefined && about_us_content !== "")
       updatedFields.about_us_content = about_us_content;
+    if (about_us_heading !== undefined && about_us_heading !== "")
+      updatedFields.about_us_heading = about_us_heading;
+    if (about_us_banner_info !== undefined && about_us_banner_info !== "")
+      updatedFields.about_us_banner_info = about_us_banner_info;
+    if (
+      about_us_content_heading !== undefined &&
+      about_us_content_heading !== ""
+    )
+      updatedFields.about_us_content_heading = about_us_content_heading;
+
+    // Handle the images array
+    if (about_us_images && Array.isArray(about_us_images)) {
+      updatedFields.about_us_images = about_us_images.filter(
+        (image) => image.about_us_img !== undefined && image.about_us_img !== ""
+      );
+    }
 
     // Find the document and update it, or create a new one if none exists
     const updatedContent = await ContentModel.findOneAndUpdate(

@@ -43,7 +43,6 @@ function UpdatePartners() {
     },
     validationSchema,
     onSubmit: async (values) => {
-      console.log(values);
       const res = await axios.post(
         `${process.env.REACT_APP_API_STRING}/update-partners`,
         values

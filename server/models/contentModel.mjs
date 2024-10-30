@@ -18,15 +18,25 @@ const contentSchema = new Schema({
   banner_bg: { type: String },
   banner_image: { type: String },
   // about us
+  about_us_heading: {
+    type: String,
+  },
+  about_us_banner_info: {
+    type: String,
+  },
+  about_us_content_heading: {
+    type: String,
+  },
   about_us_content: {
     type: String,
   },
-  about_us_bg: {
-    type: String,
-  },
-  about_us_img: {
-    type: String,
-  },
+  about_us_images: [
+    {
+      about_us_img: {
+        type: String,
+      },
+    },
+  ],
   // features
   features_subheading: { type: String },
   features_heading: { type: String },

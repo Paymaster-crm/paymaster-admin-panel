@@ -38,7 +38,7 @@ function UpdateFeatures() {
   }, []);
 
   const formik = useFormik({
-    enableReinitialize: true, // Allow reinitializing with new values
+    enableReinitialize: true,
     initialValues: {
       features_subheading: "",
       features_heading: "",
