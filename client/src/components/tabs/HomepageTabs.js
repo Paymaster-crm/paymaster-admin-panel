@@ -3,11 +3,11 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
-import UpdateBanner from "../UpdateBanner";
-import UpdateFeatures from "../UpdateFeatures";
-import UpdateReviews from "../UpdateReviews";
-import UpdatePartners from "../UpdatePartners";
-import UpdateProducts from "../UpdateProducts";
+import UpdateBanner from "../home/UpdateBanner";
+import UpdateFeatures from "../home/UpdateFeatures";
+import UpdateReviews from "../home/UpdateReviews";
+import UpdatePartners from "../home/UpdatePartners";
+import UpdateProducts from "../home/UpdateProducts";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;

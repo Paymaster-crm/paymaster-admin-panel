@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { TextField, Button, Snackbar } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
-import { handleSingleFileUpload } from "../utils/awsSingleFileUpload";
-import { validationSchema } from "../schemas/featuresSchema";
+import { handleSingleFileUpload } from "../../utils/awsSingleFileUpload";
+import { validationSchema } from "../../schemas/featuresSchema";
 
 function UpdateFeatures() {
   const [fileSnackbar, setFileSnackbar] = useState(false);

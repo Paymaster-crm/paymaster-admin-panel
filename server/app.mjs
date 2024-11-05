@@ -17,6 +17,8 @@ import updateReviews from "./routes/updateReviews.mjs";
 import updatePartners from "./routes/updatePartners.mjs";
 import updateProducts from "./routes/updateProducts.mjs";
 import addInquiries from "./routes/addInquiries.mjs";
+import updateContactUs from "./routes/updateContactUs.mjs";
+import updateServices from "./routes/updateServices.mjs";
 
 const MONGODB_URI =
   process.env.NODE_ENV === "production"
@@ -72,6 +74,8 @@ if (cluster.isPrimary) {
       app.use(updatePartners);
       app.use(updateProducts);
       app.use(addInquiries);
+      app.use(updateContactUs);
+      app.use(updateServices);
 
       app.listen(9000, () => {
         console.log(`BE started at port 9000`);

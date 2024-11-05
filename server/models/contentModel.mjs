@@ -83,6 +83,26 @@ const contentSchema = new Schema({
       product_btn_2_link: { type: String },
     },
   ],
+  // Contact us
+  contact_us_heading: { type: String },
+  contact_us_subheading: { type: String },
+  contact_us_phone: { type: String },
+  contact_us_email: { type: String },
+  contact_us_address: { type: String },
+  contact_us_working_days: { type: String },
+  contact_us_img: { type: String },
+  // Services
+  services_heading: { type: String },
+  services_banner_img: { type: String },
+  services_bg_img: { type: String },
+  services_inner_heading: { type: String },
+  services: [
+    {
+      service_name: { type: String },
+      service_desc: { type: String },
+      service_img: { type: String },
+    },
+  ],
 });
 
 const ContentModel = mongoose.model("Content", contentSchema);

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { TextField } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
-import { validationSchema } from "../schemas/reviewsSchema";
+import { validationSchema } from "../../schemas/reviewsSchema";
 
 function UpdateReviews() {
   useEffect(() => {

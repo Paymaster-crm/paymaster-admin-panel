@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { TextField, Button, Snackbar } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
-import { handleAwsNestedFileUpload } from "../utils/handleAwsNestedFileUpload";
-import { validationSchema } from "../schemas/productsSchema";
+import { handleAwsNestedFileUpload } from "../../utils/handleAwsNestedFileUpload";
+import { validationSchema } from "../../schemas/productsSchema";
 
 function UpdateProducts() {
   const [fileSnackbar, setFileSnackbar] = useState(false);

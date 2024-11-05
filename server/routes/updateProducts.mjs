@@ -4,10 +4,7 @@ import ContentModel from "../models/contentModel.mjs";
 const router = express.Router();
 
 router.post("/api/update-products", async (req, res) => {
-  const {
-    products_heading,
-    products, // Array of products from the frontend
-  } = req.body;
+  const { products_heading, products } = req.body;
 
   try {
     // Create an object with only the defined values
