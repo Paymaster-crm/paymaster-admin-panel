@@ -77,8 +77,8 @@ if (cluster.isPrimary) {
       app.use(updateContactUs);
       app.use(updateServices);
 
-      app.listen(9000, () => {
-        console.log(`BE started at port 9000`);
+      app.listen(9002, () => {
+        console.log(`BE started at port 9002`);
       });
     })
     .catch((err) => console.log("Error connecting to MongoDB Atlas:", err));
