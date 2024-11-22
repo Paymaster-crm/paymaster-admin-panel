@@ -19,6 +19,13 @@ import updateProducts from "./routes/updateProducts.mjs";
 import addInquiries from "./routes/addInquiries.mjs";
 import updateContactUs from "./routes/updateContactUs.mjs";
 import updateServices from "./routes/updateServices.mjs";
+import addBlog from "./routes/addBlog.mjs";
+import getBlogById from "./routes/getBlogById.mjs";
+import getBlogs from "./routes/getBlogs.mjs";
+import addBlogComment from "./routes/addBlogComment.mjs";
+import addAppointment from "./routes/addAppointment.mjs";
+import getAppointmentSlots from "./routes/getAppointmentSlots.mjs";
+import createOrder from "./routes/createOrder.mjs";
 
 const MONGODB_URI =
   process.env.NODE_ENV === "production"
@@ -76,6 +83,13 @@ if (cluster.isPrimary) {
       app.use(addInquiries);
       app.use(updateContactUs);
       app.use(updateServices);
+      app.use(addBlog);
+      app.use(getBlogById);
+      app.use(getBlogs);
+      app.use(addBlogComment);
+      app.use(addAppointment);
+      app.use(getAppointmentSlots);
+      app.use(createOrder);
 
       app.listen(9002, () => {
         console.log(`BE started at port 9002`);
